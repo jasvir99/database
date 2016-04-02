@@ -36,40 +36,7 @@ public class Populate {
             ms.connect();
             ms.cleanTables();
             
-            try {
-                // TODO code application logic here
-                
-                String fileName = "file:/home/jass/Downloads/database/dataset/yelp_business.json";
-                URI fileUri = new URI(fileName);
-                br = new BufferedReader(new FileReader(new File(fileUri)));
-                String line;
-                int i =1;
-                int big = 0;
-                int lineNumber = -1;
-                while((line = br.readLine())!=null) {
-//                    JSONObject obj = new JSONObject(line);
-//                    Iterator<?> keys = obj.keys();
-//                    System.out.print("Reading Obj "+i+"\nKeys:\t");
-//                    while(keys.hasNext()) {
-//                        System.out.print(keys.next()+"\t");
-//                    }
-//                    if(big<line.length())
-//                    {
-//                        big = line.length();
-//                        lineNumber = i;
-//                    }
-//                    System.out.print("\n");
-//                    i++;
-                }
-                System.out.println("Biggest Line is "+lineNumber+" with "+big+" characters");
-                
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Populate.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Populate.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(Populate.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
         } catch (Exception ex) {
             Logger.getLogger(Populate.class.getName()).log(Level.SEVERE, null, ex);
         }

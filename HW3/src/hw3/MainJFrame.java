@@ -5,7 +5,6 @@
  */
 package hw3;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,22 +20,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
-
 /**
  *
  * @author gurjot
  */
 public class MainJFrame extends javax.swing.JFrame {
-    
-        private Connection connect = null;
-        private Statement statement = null;
-        private PreparedStatement preparedStatement = null;
-        private ResultSet resultSet = null;
+
+    private Connection connect = null;
+    private Statement statement = null;
+    private PreparedStatement preparedStatement = null;
+    private ResultSet resultSet = null;
 
     private int parentId = 0;
-    
+
     private List<Integer> catsIDs = new ArrayList<>();
     private List<Integer> attrsIDs = new ArrayList<>();
+
     /**
      * Creates new form MainJFrame
      */
@@ -309,17 +308,18 @@ public class MainJFrame extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             String a = jList1.getSelectedValue();
-            preparedStatement = connect.prepareStatement("SELECT cat_id FROM categories WHERE cat_name = ?;");
+            preparedStatement = connect.prepareStatement("SELECT cat_id FROM categories WHERE cat_name = ?");
             preparedStatement.setString(1, a);
+            System.out.println(a);
             resultSet = preparedStatement.executeQuery();
-            resultSet.first();
+            resultSet.next();
             parentId = resultSet.getInt(1);
-            preparedStatement = connect.prepareStatement("SELECT * FROM categories WHERE parent_id = ?;");
+            preparedStatement = connect.prepareStatement("SELECT * FROM categories WHERE parent_id = ?");
             preparedStatement.setInt(1, parentId);
             resultSet = preparedStatement.executeQuery();
-            
+
             Vector<String> v = new Vector<>();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 v.add(resultSet.getString(2));
             }
             jList2.setListData(v);
@@ -330,83 +330,81 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jList2ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList2ValueChanged
         // TODO add your handling code here:
-       List<Integer> catIds = new ArrayList<>();
+        List<Integer> catIds = new ArrayList<>();
         List<String> l = jList2.getSelectedValuesList();
-        System.out.println("Selected Sub Cats: "+l.size());
-        for (int i=0; i<l.size(); i++){
+        System.out.println("Selected Sub Cats: " + l.size());
+        for (int i = 0; i < l.size(); i++) {
             try {
                 String x = l.get(i);
-                preparedStatement = connect.prepareStatement("SELECT cat_id FROM categories WHERE cat_name = ? AND parent_id = ?;");
+                preparedStatement = connect.prepareStatement("SELECT cat_id FROM categories WHERE cat_name = ? AND parent_id = ?");
                 preparedStatement.setString(1, x);
                 preparedStatement.setInt(2, parentId);
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 catIds.add(resultSet.getInt(1));
             } catch (SQLException ex) {
                 Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         catsIDs = catIds;
-        System.out.println("Selected Sub Cats Ids: "+catIds.size());
-        List<String>bIds = new ArrayList<>();
-        for (int i=0; i<catIds.size(); i++){
+        System.out.println("Selected Sub Cats Ids: " + catIds.size());
+        List<String> bIds = new ArrayList<>();
+        for (int i = 0; i < catIds.size(); i++) {
             try {
-                preparedStatement = connect.prepareStatement("SELECT business_id FROM category_business_link WHERE cat_id = ?;");
-              
+                preparedStatement = connect.prepareStatement("SELECT business_id FROM category_business_link WHERE cat_id = ?");
+
                 preparedStatement.setInt(1, catIds.get(i));
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 while (resultSet.next()) {
-                    
-                bIds.add(resultSet.getString(1));    
+
+                    bIds.add(resultSet.getString(1));
                 }
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.println("Selected BIDs: "+bIds.size());
+        System.out.println("Selected BIDs: " + bIds.size());
         List<Integer> attrIds = new ArrayList<>();
-        
-        for (int i=0; i<bIds.size(); i++){
+
+        for (int i = 0; i < bIds.size(); i++) {
             try {
-                preparedStatement = connect.prepareStatement("SELECT attr_id FROM attribute_business_link WHERE business_id = ?;");
-              
+                preparedStatement = connect.prepareStatement("SELECT attr_id FROM attribute_business_link WHERE business_id = ?");
+
                 preparedStatement.setString(1, bIds.get(i));
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 while (resultSet.next()) {
-                    
-                attrIds.add(resultSet.getInt(1));    
+
+                    attrIds.add(resultSet.getInt(1));
                 }
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }   
-        System.out.println("Selected Attr Ids : "+attrIds.size());
+        }
+        System.out.println("Selected Attr Ids : " + attrIds.size());
         attrIds = new ArrayList<Integer>(new LinkedHashSet<Integer>(attrIds));
         attrsIDs = attrIds;
-        System.out.println("Attr Ids : "+attrIds.size());
+        System.out.println("Attr Ids : " + attrIds.size());
         Vector<String> data = new Vector<>();
-        for (int i=0; i<attrIds.size(); i++){
+        for (int i = 0; i < attrIds.size(); i++) {
             try {
-                preparedStatement = connect.prepareStatement("SELECT attribute FROM attributes WHERE id = ?;");
+                preparedStatement = connect.prepareStatement("SELECT attribute FROM attributes WHERE id = ?");
                 preparedStatement.setInt(1, attrIds.get(i));
                 System.out.println(preparedStatement.toString());
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
-                
-                    
-                data.add(resultSet.getString(1));    
-                
-                
+                resultSet.next();
+
+                data.add(resultSet.getString(1));
+
             } catch (SQLException ex) {
                 Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         jList3.setListData(data);
-        System.out.println("Data: "+data.size());
+        System.out.println("Data: " + data.size());
     }//GEN-LAST:event_jList2ValueChanged
 
     private void jList3ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList3ValueChanged
@@ -414,47 +412,47 @@ public class MainJFrame extends javax.swing.JFrame {
             // TODO add your handling code here:
             int[] cPOS = jList2.getSelectedIndices();
             List<Integer> selCa = new ArrayList<>();
-            for(int i=0; i<cPOS.length; i++) {
+            for (int i = 0; i < cPOS.length; i++) {
                 selCa.add(catsIDs.get(i));
             }
             int[] aPOS = jList3.getSelectedIndices();
             List<Integer> selAt = new ArrayList<>();
-            for(int i=0; i<cPOS.length; i++) {
+            for (int i = 0; i < cPOS.length; i++) {
                 selAt.add(attrsIDs.get(i));
             }
-            
+
             List<String> bIds1 = new ArrayList<>();
             List<String> bIds2 = new ArrayList<>();
-            
-            for(int i=0; i<selCa.size(); i++) {
-                 preparedStatement = connect.prepareStatement("SELECT business_id FROM category_business_link WHERE cat_id = ?;");
-              
+
+            for (int i = 0; i < selCa.size(); i++) {
+                preparedStatement = connect.prepareStatement("SELECT business_id FROM category_business_link WHERE cat_id = ?");
+
                 preparedStatement.setInt(1, selCa.get(i));
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 while (resultSet.next()) {
-                    
-                bIds1.add(resultSet.getString(1));    
+
+                    bIds1.add(resultSet.getString(1));
                 }
             }
-            System.out.println("BID1: "+bIds1.size());
-            
-            for(int i=0; i<selAt.size(); i++) {
-                 preparedStatement = connect.prepareStatement("SELECT business_id FROM attribute_business_link WHERE attr_id = ?;");
-              
+            System.out.println("BID1: " + bIds1.size());
+
+            for (int i = 0; i < selAt.size(); i++) {
+                preparedStatement = connect.prepareStatement("SELECT business_id FROM attribute_business_link WHERE attr_id = ?");
+
                 preparedStatement.setInt(1, selAt.get(i));
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 while (resultSet.next()) {
-                    
-                bIds2.add(resultSet.getString(1));    
+
+                    bIds2.add(resultSet.getString(1));
                 }
             }
-            System.out.println("BID2: "+bIds2.size());
+            System.out.println("BID2: " + bIds2.size());
             bIds1.retainAll(bIds2);
-            System.out.println("BID1: "+bIds1.size());
+            System.out.println("BID1: " + bIds1.size());
             show_business(bIds1);
-                    
+
         } catch (SQLException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -463,189 +461,165 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        
+
         javax.swing.JTable jTable = (javax.swing.JTable) evt.getSource();
         int rowSelected = jTable.getSelectedRow();
-        
+
         String businessId = jTable.getModel().getValueAt(rowSelected, 4).toString();
-        
+
         UserReviews review = new UserReviews();
         review.initializeUserReviewsWindow();
         review.show_reviews(businessId);
-        
-        
+
+
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         // TODO add your handling code here:
-        
-        
+
         try {
             // TODO add your handling code here:
-            
+
             int day_id = jComboBox1.getSelectedIndex();
             List<String> bIds1 = get_values_as_per_category_list();
             List<String> bIds2 = get_values_as_per_attribute_list();
-            
-            
-            System.out.println("BID1: !"+bIds1.size());
-            
-            System.out.println("BID2: ="+bIds2.size());
+
+            System.out.println("BID1: !" + bIds1.size());
+
+            System.out.println("BID2: =" + bIds2.size());
             bIds1.retainAll(bIds2);
-            System.out.println("BID1:+ "+bIds1.size());
-            if(day_id > 0)
-            {
-                try{
+            System.out.println("BID1:+ " + bIds1.size());
+            if (day_id > 0) {
+                try {
                     List<String> bIds3 = new ArrayList<>();
-                    preparedStatement = connect.prepareStatement("SELECT business_id FROM hours WHERE day_id = ?;");
+                    preparedStatement = connect.prepareStatement("SELECT business_id FROM hours WHERE day_id = ?");
                     preparedStatement.setInt(1, day_id);
                     resultSet = preparedStatement.executeQuery();
-                    resultSet.first();
-                    while (resultSet.next()) {        
+                    resultSet.next();
+                    while (resultSet.next()) {
                         bIds3.add(resultSet.getString(1));
                     }
-                System.out.println("BID3: #"+bIds3.size());
-            
-                bIds1.retainAll(bIds3);
-                System.out.println("BID3: $"+bIds3.size());
-                System.out.println("BID1: %"+bIds1.size());
-                } catch (Exception e)
-                {
+                    System.out.println("BID3: #" + bIds3.size());
+
+                    bIds1.retainAll(bIds3);
+                    System.out.println("BID3: $" + bIds3.size());
+                    System.out.println("BID1: %" + bIds1.size());
+                } catch (Exception e) {
                 }
             }
-            
-            try{
+
+            try {
                 String from_time;
                 String to_time;
-                if(jComboBox2.getSelectedIndex() == 0)
-                {
+                if (jComboBox2.getSelectedIndex() == 0) {
                     from_time = "00:00:00";
-                }
-                else
-                {
+                } else {
                     from_time = jComboBox2.getSelectedItem().toString();
                 }
-                
-                if(jComboBox3.getSelectedIndex() == 0)
-                {
+
+                if (jComboBox3.getSelectedIndex() == 0) {
                     to_time = "11:59:00";
-                }
-                else
-                {
+                } else {
                     to_time = jComboBox3.getSelectedItem().toString();
                 }
                 System.out.println(from_time);
                 System.out.println(to_time);
-                preparedStatement = connect.prepareStatement("SELECT business_id FROM hours WHERE CAST(open AS time) >= ? AND CAST(close AS time) <= ?;");
-                preparedStatement.setString(1,from_time);
+                preparedStatement = connect.prepareStatement("SELECT business_id FROM hours WHERE CAST(open AS time) >= ? AND CAST(close AS time) <= ?");
+                preparedStatement.setString(1, from_time);
                 preparedStatement.setString(2, to_time);
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 List<String> bIds4 = new ArrayList<>();
-                while (resultSet.next()) {        
+                while (resultSet.next()) {
                     bIds4.add(resultSet.getString(1));
                 }
-            
+
                 bIds1.retainAll(bIds4);
-            } catch (Exception e)
-            {
-                
+            } catch (Exception e) {
+
             }
             show_business(bIds1);
-                    
+
         } catch (Exception ex) {
         }
-        
+
     }//GEN-LAST:event_jButton2MouseClicked
 
+    public List<String> get_values_as_per_category_list() {
+        List<String> bIds1 = new ArrayList<>();
+        try {
 
-public List<String> get_values_as_per_category_list()
-{
-    List<String> bIds1 = new ArrayList<>();
-    try{
-        
-    int[] cPOS = jList2.getSelectedIndices();
+            int[] cPOS = jList2.getSelectedIndices();
             List<Integer> selCa = new ArrayList<>();
-            for(int i=0; i<cPOS.length; i++) {
+            for (int i = 0; i < cPOS.length; i++) {
                 selCa.add(catsIDs.get(i));
             }
-            
-            for(int i=0; i<selCa.size(); i++) {
-                 preparedStatement = connect.prepareStatement("SELECT business_id FROM category_business_link WHERE cat_id = ?;");
-              
+
+            for (int i = 0; i < selCa.size(); i++) {
+                preparedStatement = connect.prepareStatement("SELECT business_id FROM category_business_link WHERE cat_id = ?");
+
                 preparedStatement.setInt(1, selCa.get(i));
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 while (resultSet.next()) {
-                    
-                bIds1.add(resultSet.getString(1));    
+
+                    bIds1.add(resultSet.getString(1));
                 }
             }
-            
-            
-    } catch (SQLException ex) {
+
+        } catch (SQLException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
-    return bIds1;
-            
-}
 
-public List<String> get_values_as_per_attribute_list()
-{
-    List<String> bIds1 = new ArrayList<>();
-    try{
-        
-    int[] aPOS = jList3.getSelectedIndices();
-    int[] cPOS = jList2.getSelectedIndices();
+        return bIds1;
+
+    }
+
+    public List<String> get_values_as_per_attribute_list() {
+        List<String> bIds1 = new ArrayList<>();
+        try {
+
+            int[] aPOS = jList3.getSelectedIndices();
+            int[] cPOS = jList2.getSelectedIndices();
             List<Integer> selAt = new ArrayList<>();
-            for(int i=0; i<cPOS.length; i++) {
+            for (int i = 0; i < cPOS.length; i++) {
                 selAt.add(attrsIDs.get(i));
             }
-            
-            for(int i=0; i<selAt.size(); i++) {
-                 preparedStatement = connect.prepareStatement("SELECT business_id FROM attribute_business_link WHERE attr_id = ?;");
-              
+
+            for (int i = 0; i < selAt.size(); i++) {
+                preparedStatement = connect.prepareStatement("SELECT business_id FROM attribute_business_link WHERE attr_id = ?");
+
                 preparedStatement.setInt(1, selAt.get(i));
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
+                resultSet.next();
                 while (resultSet.next()) {
-                    
-                bIds1.add(resultSet.getString(1));    
+
+                    bIds1.add(resultSet.getString(1));
                 }
             }
-            
-            
-    } catch (SQLException ex) {
+
+        } catch (SQLException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
-    return bIds1;
-            
-}
-    
-public static void deleteAllRows(final DefaultTableModel model) {
-    for( int i = model.getRowCount() - 1; i >= 0; i-- ) {
-        model.removeRow(i);
-    }
-}    
 
-   public void connect() {
+        return bIds1;
+
+    }
+
+    public static void deleteAllRows(final DefaultTableModel model) {
+        for (int i = model.getRowCount() - 1; i >= 0; i--) {
+            model.removeRow(i);
+        }
+    }
+
+    public void connect() {
         try {
             // This will load the MySQL driver, each DB has its own driver
+            Class.forName("oracle.jdbc.driver.OracleDriver");
             Class.forName("com.mysql.jdbc.Driver");
-//            Class.forName("oracle.jdbc.driver.OracleDriver");
-//try {
-//   Driver myDriver = new oracle.jdbc.driver.OracleDriver();
-//   DriverManager.registerDriver( myDriver );
-//}
-//catch(ClassNotFoundException ex) {
-//   System.out.println("Error: unable to load driver class!");
-//   System.exit(1);
-//}
             // Setup the connection with the DB
             connect = DriverManager
-                    .getConnection("jdbc:mysql://localhost/yelp", "root","a");
+                    .getConnection("jdbc:oracle:thin:@localhost:1521:sysdba", "c##jasvir", "password");
 
 //            connect = DriverManager.getConnection("jdbc:oracle:thin:@hostname:port Number:databaseName","user","password");
             // Statements allow to issue SQL queries to the database
@@ -653,21 +627,21 @@ public static void deleteAllRows(final DefaultTableModel model) {
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         try {
-            resultSet = statement.executeQuery("SELECT * FROM days;");
-            while(resultSet.next()){
+            resultSet = statement.executeQuery("SELECT * FROM days");
+            while (resultSet.next()) {
                 jComboBox1.addItem(resultSet.getString(2));
             }
         } catch (SQLException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         try {
-            resultSet = statement.executeQuery("SELECT * FROM categories WHERE parent_id IS NULL;");
-            
+            resultSet = statement.executeQuery("SELECT * FROM categories WHERE parent_id IS NULL");
+
             Vector<String> v = new Vector<>();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 v.add(resultSet.getString(2));
             }
             jList1.setListData(v);
@@ -675,36 +649,33 @@ public static void deleteAllRows(final DefaultTableModel model) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-   
-       
-       public void show_business(List<String> bIds)
-       {
-           DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            deleteAllRows(model);
-            jTable1.setModel(model);
-            System.out.println(bIds.size());
-        try{
-            for(int i=0; i<bIds.size(); i++){
-               
+
+    public void show_business(List<String> bIds) {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        deleteAllRows(model);
+        jTable1.setModel(model);
+        System.out.println(bIds.size());
+        try {
+            for (int i = 0; i < bIds.size(); i++) {
+
                 preparedStatement = connect.prepareStatement("Select name, full_address, city, state, stars, business_id from business where business_id = ?");
                 preparedStatement.setString(1, bIds.get(i));
                 resultSet = preparedStatement.executeQuery();
-                resultSet.first();
-                Object[] row = {resultSet.getString(1)+" "+resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5), resultSet.getString(6)};
-                model.addRow(row);                
+                resultSet.next();
+                Object[] row = {resultSet.getString(1) + " " + resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)};
+                model.addRow(row);
             }
             jTable1.setModel(model);
             try {
                 jTable1.removeColumn(jTable1.getColumnModel().getColumn(4));
             } catch (Exception e) {
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-       }
-   
-   
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -714,8 +685,7 @@ public static void deleteAllRows(final DefaultTableModel model) {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        
-       
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -740,7 +710,7 @@ public static void deleteAllRows(final DefaultTableModel model) {
                 MainJFrame jFrame = new MainJFrame();
                 jFrame.setVisible(true);
                 jFrame.connect();
-                
+
             }
         });
     }

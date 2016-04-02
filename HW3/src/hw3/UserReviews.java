@@ -21,18 +21,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
-
 /**
  *
  * @author jass
  */
 public class UserReviews extends javax.swing.JFrame {
-    
-     private Connection connect = null;
+
+    private Connection connect = null;
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
-
 
     /**
      * Creates new form UserReviews
@@ -40,7 +38,7 @@ public class UserReviews extends javax.swing.JFrame {
     public UserReviews() {
         initComponents();
         tweak_inits();
-        
+
     }
 
     /**
@@ -127,7 +125,7 @@ public class UserReviews extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
+
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -164,46 +162,45 @@ public class UserReviews extends javax.swing.JFrame {
                 new UserReviews().setVisible(true);
             }
         });
-        
-    }
-    
-    private void tweak_inits(){
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        
-    }
-    
-    public void show_reviews(String business_id)
-    {
-        
-        try{
-                DefaultTableModel model = (DefaultTableModel) jTable_review.getModel();
-                connect = DriverManager
-                    .getConnection("jdbc:mysql://localhost/yelp", "root","a");
-                preparedStatement = connect.prepareStatement("SELECT date, votes_useful, text, starts FROM reviews WHERE business_id = ?;");
-                preparedStatement.setString(1, business_id);
-                resultSet = preparedStatement.executeQuery();
-                deleteAllRows(model);
-                jTable_review.setModel(model);
-                resultSet.first();
-                while(!resultSet.isAfterLast()) {
-                    try{
-                    Object[] row = {resultSet.getString(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4)};
-                    System.out.println(resultSet.getString(1) + resultSet.getString(2) + resultSet.getString(3) + resultSet.getString(4));
-                    model.addRow(row);
-                    resultSet.next();
-                    } catch (Exception e)
-                    {
-                        
-                    }
-                }
-                jTable_review.setModel(model);
-                
-        }
-        catch (SQLException ex) {
-                Logger.getLogger(UserReviews.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
     }
 
+    private void tweak_inits() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+    }
+
+    public void show_reviews(String business_id) {
+
+        try {
+            DefaultTableModel model = (DefaultTableModel) jTable_review.getModel();
+            connect = DriverManager
+                    .getConnection("jdbc:mysql://localhost/yelp", "root", "a");
+            try (PreparedStatement preparedStatement1 = connect.prepareStatement("SELECT date, votes_useful, text, starts FROM reviews WHERE business_id = ?")) 
+            {
+                preparedStatement1.setString(1, business_id);
+                try (ResultSet resultSet1 = preparedStatement1.executeQuery()) {
+                    deleteAllRows(model);
+                    jTable_review.setModel(model);
+                    resultSet1.first();
+                    while (!resultSet1.isAfterLast()) {
+                        try {
+                            Object[] row = {resultSet1.getString(1), resultSet1.getString(2), resultSet1.getString(3), resultSet1.getString(4)};
+                            System.out.println(resultSet1.getString(1) + resultSet1.getString(2) + resultSet1.getString(3) + resultSet1.getString(4));
+                            model.addRow(row);
+                            resultSet1.next();
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    jTable_review.setModel(model);
+                }
+            }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(UserReviews.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
