@@ -21,16 +21,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
+
 /**
  *
  * @author gurjot
  */
 public class MainJFrame extends javax.swing.JFrame {
     
-    private Connection connect = null;
-    private Statement statement = null;
-    private PreparedStatement preparedStatement = null;
-    private ResultSet resultSet = null;
+        private Connection connect = null;
+        private Statement statement = null;
+        private PreparedStatement preparedStatement = null;
+        private ResultSet resultSet = null;
 
     private int parentId = 0;
     
@@ -52,6 +53,7 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDialog1 = new javax.swing.JDialog();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
@@ -71,6 +73,17 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,50 +118,55 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Business", "City", "State", "Stars"
+                "Business", "City", "State", "Stars", "bid"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
             }
         });
         jScrollPane4.setViewportView(jTable1);
@@ -181,6 +199,11 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabel4.setText("Search for");
 
         jButton2.setText("Search");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -430,27 +453,177 @@ public class MainJFrame extends javax.swing.JFrame {
             System.out.println("BID2: "+bIds2.size());
             bIds1.retainAll(bIds2);
             System.out.println("BID1: "+bIds1.size());
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            deleteAllRows(model);
-            jTable1.setModel(model);
-            for(int i=0; i<bIds1.size(); i++){
-                preparedStatement = connect.prepareStatement("Select name, full_address, city, state, stars from business where business_id = ?");
-                preparedStatement.setString(1, bIds1.get(i));
-                resultSet = preparedStatement.executeQuery();
-                resultSet.first();
-                Object[] row = {resultSet.getString(1)+" "+resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5)};
-                model.addRow(row);
-            }
-            
-            jTable1.setModel(model);
+            show_business(bIds1);
                     
         } catch (SQLException ex) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }//GEN-LAST:event_jList3ValueChanged
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        
+        javax.swing.JTable jTable = (javax.swing.JTable) evt.getSource();
+        int rowSelected = jTable.getSelectedRow();
+        
+        String businessId = jTable.getModel().getValueAt(rowSelected, 4).toString();
+        
+        UserReviews review = new UserReviews();
+        review.initializeUserReviewsWindow();
+        review.show_reviews(businessId);
+        
+        
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        
+        
+        try {
+            // TODO add your handling code here:
+            
+            int day_id = jComboBox1.getSelectedIndex();
+            List<String> bIds1 = get_values_as_per_category_list();
+            List<String> bIds2 = get_values_as_per_attribute_list();
+            
+            
+            System.out.println("BID1: !"+bIds1.size());
+            
+            System.out.println("BID2: ="+bIds2.size());
+            bIds1.retainAll(bIds2);
+            System.out.println("BID1:+ "+bIds1.size());
+            if(day_id > 0)
+            {
+                try{
+                    List<String> bIds3 = new ArrayList<>();
+                    preparedStatement = connect.prepareStatement("SELECT business_id FROM hours WHERE day_id = ?;");
+                    preparedStatement.setInt(1, day_id);
+                    resultSet = preparedStatement.executeQuery();
+                    resultSet.first();
+                    while (resultSet.next()) {        
+                        bIds3.add(resultSet.getString(1));
+                    }
+                System.out.println("BID3: #"+bIds3.size());
+            
+                bIds1.retainAll(bIds3);
+                System.out.println("BID3: $"+bIds3.size());
+                System.out.println("BID1: %"+bIds1.size());
+                } catch (Exception e)
+                {
+                }
+            }
+            
+            try{
+                String from_time;
+                String to_time;
+                if(jComboBox2.getSelectedIndex() == 0)
+                {
+                    from_time = "00:00:00";
+                }
+                else
+                {
+                    from_time = jComboBox2.getSelectedItem().toString();
+                }
+                
+                if(jComboBox3.getSelectedIndex() == 0)
+                {
+                    to_time = "11:59:00";
+                }
+                else
+                {
+                    to_time = jComboBox3.getSelectedItem().toString();
+                }
+                System.out.println(from_time);
+                System.out.println(to_time);
+                preparedStatement = connect.prepareStatement("SELECT business_id FROM hours WHERE CAST(open AS time) >= ? AND CAST(close AS time) <= ?;");
+                preparedStatement.setString(1,from_time);
+                preparedStatement.setString(2, to_time);
+                resultSet = preparedStatement.executeQuery();
+                resultSet.first();
+                List<String> bIds4 = new ArrayList<>();
+                while (resultSet.next()) {        
+                    bIds4.add(resultSet.getString(1));
+                }
+            
+                bIds1.retainAll(bIds4);
+            } catch (Exception e)
+            {
+                
+            }
+            show_business(bIds1);
+                    
+        } catch (Exception ex) {
+        }
+        
+    }//GEN-LAST:event_jButton2MouseClicked
+
+
+public List<String> get_values_as_per_category_list()
+{
+    List<String> bIds1 = new ArrayList<>();
+    try{
+        
+    int[] cPOS = jList2.getSelectedIndices();
+            List<Integer> selCa = new ArrayList<>();
+            for(int i=0; i<cPOS.length; i++) {
+                selCa.add(catsIDs.get(i));
+            }
+            
+            for(int i=0; i<selCa.size(); i++) {
+                 preparedStatement = connect.prepareStatement("SELECT business_id FROM category_business_link WHERE cat_id = ?;");
+              
+                preparedStatement.setInt(1, selCa.get(i));
+                resultSet = preparedStatement.executeQuery();
+                resultSet.first();
+                while (resultSet.next()) {
+                    
+                bIds1.add(resultSet.getString(1));    
+                }
+            }
+            
+            
+    } catch (SQLException ex) {
+            Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    return bIds1;
+            
+}
+
+public List<String> get_values_as_per_attribute_list()
+{
+    List<String> bIds1 = new ArrayList<>();
+    try{
+        
+    int[] aPOS = jList3.getSelectedIndices();
+    int[] cPOS = jList2.getSelectedIndices();
+            List<Integer> selAt = new ArrayList<>();
+            for(int i=0; i<cPOS.length; i++) {
+                selAt.add(attrsIDs.get(i));
+            }
+            
+            for(int i=0; i<selAt.size(); i++) {
+                 preparedStatement = connect.prepareStatement("SELECT business_id FROM attribute_business_link WHERE attr_id = ?;");
+              
+                preparedStatement.setInt(1, selAt.get(i));
+                resultSet = preparedStatement.executeQuery();
+                resultSet.first();
+                while (resultSet.next()) {
+                    
+                bIds1.add(resultSet.getString(1));    
+                }
+            }
+            
+            
+    } catch (SQLException ex) {
+            Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    return bIds1;
+            
+}
+    
 public static void deleteAllRows(final DefaultTableModel model) {
     for( int i = model.getRowCount() - 1; i >= 0; i-- ) {
         model.removeRow(i);
@@ -472,7 +645,7 @@ public static void deleteAllRows(final DefaultTableModel model) {
 //}
             // Setup the connection with the DB
             connect = DriverManager
-                    .getConnection("jdbc:mysql://localhost/yelp", "root", "dds");
+                    .getConnection("jdbc:mysql://localhost/yelp", "root","a");
 
 //            connect = DriverManager.getConnection("jdbc:oracle:thin:@hostname:port Number:databaseName","user","password");
             // Statements allow to issue SQL queries to the database
@@ -502,6 +675,34 @@ public static void deleteAllRows(final DefaultTableModel model) {
             Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+   
+       
+       public void show_business(List<String> bIds)
+       {
+           DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            deleteAllRows(model);
+            jTable1.setModel(model);
+            System.out.println(bIds.size());
+        try{
+            for(int i=0; i<bIds.size(); i++){
+               
+                preparedStatement = connect.prepareStatement("Select name, full_address, city, state, stars, business_id from business where business_id = ?");
+                preparedStatement.setString(1, bIds.get(i));
+                resultSet = preparedStatement.executeQuery();
+                resultSet.first();
+                Object[] row = {resultSet.getString(1)+" "+resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5), resultSet.getString(6)};
+                model.addRow(row);                
+            }
+            jTable1.setModel(model);
+            try {
+                jTable1.removeColumn(jTable1.getColumnModel().getColumn(4));
+            } catch (Exception e) {
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       }
    
    
     /**
@@ -552,6 +753,7 @@ public static void deleteAllRows(final DefaultTableModel model) {
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
+    private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

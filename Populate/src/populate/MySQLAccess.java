@@ -59,7 +59,7 @@ public class MySQLAccess {
             Class.forName("com.mysql.jdbc.Driver");
             // Setup the connection with the DB
             connect = DriverManager
-                    .getConnection("jdbc:mysql://localhost/yelp", "root", "dds");
+                    .getConnection("jdbc:mysql://localhost/yelp", "root", "a");
 
             // Statements allow to issue SQL queries to the database
             statement = connect.createStatement();
@@ -72,28 +72,28 @@ public class MySQLAccess {
         Statement stmt = connect.createStatement();
         stmt.execute("SET FOREIGN_KEY_CHECKS=0");
         stmt.close();
-        statement.executeUpdate("TRUNCATE table attribute_business_link;");
-        int i = 0;
-        i = statement.executeUpdate("TRUNCATE table attributes;");
+       // statement.executeUpdate("TRUNCATE table attribute_business_link;");
+        int i = 1;
+        //i = statement.executeUpdate("TRUNCATE table attributes;");
 
-        statement.executeUpdate("TRUNCATE table business;");
-        statement.executeUpdate("TRUNCATE table categories;");
+        //statement.executeUpdate("TRUNCATE table business;");
+        /*statement.executeUpdate("TRUNCATE table categories;");
         statement.executeUpdate("TRUNCATE table category_business_link;");
         statement.executeUpdate("TRUNCATE table checkins;");
         statement.executeUpdate("TRUNCATE table days;");
         statement.executeUpdate("TRUNCATE table hours;");
         statement.executeUpdate("TRUNCATE table reviews;");
-        statement.executeUpdate("TRUNCATE table users;");
+        statement.executeUpdate("TRUNCATE table users;");*/
 
         Statement stmt1 = connect.createStatement();
         stmt1.execute("SET FOREIGN_KEY_CHECKS=1");
         stmt1.close();
 
-        insertDays();
-        insertParentCategories();
+        //insertDays();
+        //insertParentCategories();
 
-        insertBusiness();
-        insertUsers();
+        //insertBusiness();
+        //insertUsers();
 insertReviews();
         return i;
     }
@@ -186,7 +186,7 @@ insertReviews();
     private void insertBusiness() throws FileNotFoundException, IOException, SQLException, ParseException {
         try {
             BufferedReader br = null;
-            String fileName = "file:///Volumes/DATA/Downloads/yelp_business.json";
+            String fileName = "file:/home/jass/Downloads/database/dataset/yelp_business.json";
             URI fileUri = new URI(fileName);
             br = new BufferedReader(new FileReader(new File(fileUri)));
             String line;
@@ -398,7 +398,7 @@ insertReviews();
     private void insertUsers() {
         try {
             BufferedReader br = null;
-            String fileName = "file:///Volumes/DATA/Downloads/yelp_user.json";
+            String fileName = "file:/home/jass/Downloads/database/dataset/yelp_user.json";
             URI fileUri = new URI(fileName);
             br = new BufferedReader(new FileReader(new File(fileUri)));
             String line;
@@ -431,9 +431,10 @@ insertReviews();
     
     private void insertReviews() throws ParseException {
         try {
+            System.out.println("reviews");
             BufferedReader br = null;
             SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
-            String fileName = "file:///Volumes/DATA/Downloads/yelp_review.json";
+            String fileName = "file:/home/jass/Downloads/database/dataset/yelp_review.json";
             URI fileUri = new URI(fileName);
             br = new BufferedReader(new FileReader(new File(fileUri)));
             String line;

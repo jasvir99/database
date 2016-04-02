@@ -39,7 +39,7 @@ public class Populate {
             try {
                 // TODO code application logic here
                 
-                String fileName = "file:///Volumes/DATA/Downloads/yelp_business.json";
+                String fileName = "file:/home/jass/Downloads/database/dataset/yelp_business.json";
                 URI fileUri = new URI(fileName);
                 br = new BufferedReader(new FileReader(new File(fileUri)));
                 String line;
