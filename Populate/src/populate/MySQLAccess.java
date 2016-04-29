@@ -36,7 +36,7 @@ import org.json.JSONObject;
  *
  * @author damandeep
  */
-public class MySQLAccess {
+public class MySQccess {
 
     private Connection connect = null;
     private Statement statement = null;
